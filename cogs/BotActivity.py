@@ -21,6 +21,7 @@ class BotActivity(commands.Cog):
 
     @tasks.loop(seconds=120)
     async def change_status(self):
+        # Every x seconds, randomly select a new game from the games list to play.
         await self.client.change_presence(activity=discord.Game(random.choice(self.games_list)))
 
     @commands.command(aliases=["addg","addgame"],

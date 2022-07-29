@@ -91,15 +91,12 @@ class Reddit(commands.Cog):
                              user_agent=self.credentials["user_agent"], username=self.credentials["username"],
                              password=self.credentials["password"])
         sub_choice = random.choice(self.subreddit_list)
-        # print(f"Subreddit choice: {sub_choice}")
         submission = reddit.subreddit(sub_choice).random()
+
         # Cycle though random reddit submission until post is a picture and non-NSFW
         while submission.over_18 or not str(submission.url).endswith((".jpg", ".png", ".gif", ".jpeg")):
-            # print(f"Rerolling URL: {str(submission.url)}")
             submission = reddit.subreddit(sub_choice).random()
         url = submission.url
-        # print(f"Final URL: {str(url)}")
-        # print(f"Final Title: {str(submission.title)}")
 
         # Store image byte data into variable
         async with self.session.get(url) as resp:
@@ -123,7 +120,6 @@ class Reddit(commands.Cog):
         ci_height = calculated_height
 
         # Create black caption box around initial image
-        # caption_box = Image.new("RGBA", (int(ci_width+10), int(ci_height + (ci_height/5))), "black")
         caption_box = Image.new("RGBA", (int(ci_width + 10), int(ci_height + 400)), "black")
         caption_box.paste(converted_image, (5, 5, (ci_width + 5), (ci_height + 5)))
 
@@ -139,23 +135,9 @@ class Reddit(commands.Cog):
         caption_width, caption_height = caption_font.getsize(caption_text)
 
         draw = ImageDraw.Draw(caption_box)
-        # draw.text((int((ci_width-caption_width)/2), int((ci_height+((ci_height/5)-caption_height)/2))), caption_text,
-        #           font=caption_font, fill="white", embedded_color=
 
-        # if len(caption_original) <= 30:
         draw.text((int((ci_width - caption_width) / 2), int((ci_height + (400 - caption_height) / 2))),
                   caption_text, font=caption_font, fill="white", embedded_color=True)
-        # elif len(caption_original) > 30:
-        #     draw.text((10, int((ci_height + (400 - caption_height) / 2))), caption_emoji,
-        #               font=caption_font, fill="white", embedded_color=True)
-        #     draw.text((ci_width - 130, int((ci_height + (400 - caption_height) / 2))), caption_emoji,
-        #               font=caption_font, fill="white", embedded_color=True)
-        #     # draw.text((int((ci_width - caption_width) / 6), int((ci_height + (400 - caption_height) / 2))),
-        #     #           caption_original[0:30] + "\n" + caption_original[30:], font=caption_font, fill="white",
-        #     #           align="center")
-        #     draw.text((185, int((ci_height + (400 - caption_height) / 2))),
-        #               caption_original[0:30] + "\n" + caption_original[30:], font=caption_font, fill="white",
-        #               align="center")
 
         with BytesIO() as output:
             caption_box.save(output, format="PNG")
